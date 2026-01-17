@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:keep_in_touch/providers/animal_provider.dart';
 import 'package:keep_in_touch/providers/auth_provider.dart';
+import 'package:keep_in_touch/providers/form_provider.dart';
 import 'package:keep_in_touch/widgets/animal_card.dart';
 import 'package:keep_in_touch/widgets/status_filter.dart';
 import 'package:provider/provider.dart';
@@ -351,8 +352,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     FloatingActionButton(
                       heroTag: 'refresh',
-                      onPressed: () {
-                        animalProvider.fetchAnimals();
+                      onPressed: () async {
+                        try {
+                          await context
+                              .read<FormProvider>()
+                              .generatePeriodicForms();
+                          await animalProvider.fetchAnimals();
+                        } catch (e) {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Error: $e')),
+                            );
+                          }
+                        }
                       },
                       child: const Icon(Icons.refresh),
                     ),

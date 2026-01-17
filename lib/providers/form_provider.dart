@@ -1,9 +1,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:keep_in_touch/models/form_model.dart';
+import 'package:keep_in_touch/providers/animal_provider.dart';
 import 'package:keep_in_touch/services/form_service.dart';
 
 class FormProvider extends ChangeNotifier {
   final FormService _formService = FormService();
+  AnimalProvider? _animalProvider;
+
+  void setAnimalProvider(AnimalProvider animalProvider) {
+    _animalProvider = animalProvider;
+  }
 
   List<FormModel> _forms = [];
   bool _isLoading = false;
@@ -64,6 +70,36 @@ class FormProvider extends ChangeNotifier {
 
     notifyListeners();
     return prevForm;
+  }
+
+  Future<FormModel> createForm(int animalId) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final newForm = await _formService.createForm(animalId);
+      _forms.insert(0, newForm);
+      _forms.sort((a, b) => b.createdDate.compareTo(a.createdDate));
+      
+      // Refresh animal data to update status and dates
+      if (_animalProvider != null) {
+        await _animalProvider!.getAnimal(animalId);
+      }
+      
+      _isLoading = false;
+      notifyListeners();
+      return newForm;
+    } catch (e) {
+      _errorMessage = e.toString();
+      _isLoading = false;
+      notifyListeners();
+      rethrow;
+    }
+  }
+
+  Future<void> generatePeriodicForms() async {
+    await _formService.generatePeriodicForms();
   }
 
   void clearError() {

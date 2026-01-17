@@ -54,4 +54,25 @@ class FormService {
       'form_status': prevForm.formStatus,
     });
   }
+
+  Future<FormModel> createForm(int animalId) async {
+    final headers = await ApiService.getHeaders();
+    final response = await http.post(
+      Uri.parse('${ApiConfig.baseUrl}/animals/$animalId/create-form'),
+      headers: headers,
+    );
+
+    await ApiService.handleResponse(response);
+    return FormModel.fromJson(jsonDecode(response.body));
+  }
+
+  Future<void> generatePeriodicForms() async {
+    final headers = await ApiService.getHeaders();
+    final response = await http.post(
+      Uri.parse('${ApiConfig.baseUrl}/forms/generate-periodic'),
+      headers: headers,
+    );
+
+    await ApiService.handleResponse(response);
+  }
 }

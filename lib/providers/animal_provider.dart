@@ -48,7 +48,13 @@ class AnimalProvider extends ChangeNotifier {
   }
 
   Future<Animal> getAnimal(int animalId) async {
-    return await _animalService.getAnimal(animalId);
+    final animal = await _animalService.getAnimal(animalId);
+    final index = _animals.indexWhere((a) => a.id == animalId);
+    if (index != -1) {
+      _animals[index] = animal;
+    }
+    notifyListeners();
+    return animal;
   }
 
   void setFilter(String filter) {
@@ -71,6 +77,16 @@ class AnimalProvider extends ChangeNotifier {
     _animals.insert(0, newAnimal);
     notifyListeners();
     return newAnimal;
+  }
+
+  Future<Animal> updateAnimal(int animalId, Map<String, dynamic> data) async {
+    final updatedAnimal = await _animalService.updateAnimal(animalId, data);
+    final index = _animals.indexWhere((a) => a.id == animalId);
+    if (index != -1) {
+      _animals[index] = updatedAnimal;
+    }
+    notifyListeners();
+    return updatedAnimal;
   }
 
   void clearError() {

@@ -10,6 +10,8 @@ class Animal {
   final int formGenerationPeriod;
   final List<int> formIds;
   final String formStatus;
+  final DateTime? lastFormSentDate;
+  final DateTime? lastFormCreatedDate;
 
   Animal({
     required this.id,
@@ -21,6 +23,8 @@ class Animal {
     required this.formGenerationPeriod,
     required this.formIds,
     required this.formStatus,
+    this.lastFormSentDate,
+    this.lastFormCreatedDate,
   });
 
   factory Animal.fromJson(Map<String, dynamic> json) {
@@ -34,6 +38,12 @@ class Animal {
       formGenerationPeriod: json['form_generation_period'] as int,
       formIds: (json['form_ids'] as List<dynamic>?)?.cast<int>() ?? [],
       formStatus: json['form_status'] as String? ?? 'created',
+      lastFormSentDate: json['last_form_sent_date'] != null 
+          ? DateTime.parse(json['last_form_sent_date'] as String) 
+          : null,
+      lastFormCreatedDate: json['last_form_created_date'] != null 
+          ? DateTime.parse(json['last_form_created_date'] as String) 
+          : null,
     );
   }
 
@@ -48,6 +58,8 @@ class Animal {
       'form_generation_period': formGenerationPeriod,
       'form_ids': formIds,
       'form_status': formStatus,
+      'last_form_sent_date': lastFormSentDate?.toIso8601String(),
+      'last_form_created_date': lastFormCreatedDate?.toIso8601String(),
     };
   }
 

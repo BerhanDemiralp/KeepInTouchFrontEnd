@@ -33,7 +33,7 @@ enum FormStateEnum {
       case FormStateEnum.sent:
         return 'sent';
       default:
-        return 'pending';
+        return 'created';
     }
   }
 }
@@ -63,7 +63,7 @@ class FormModel {
     return FormModel(
       id: json['id'] as int,
       animalId: json['animal_id'] as int,
-      formStatus: json['form_status'] as String? ?? 'pending',
+      formStatus: json['form_status'] as String? ?? 'created',
       createdDate: DateTime.parse(json['created_date'] as String),
       assignedDate: json['assigned_date'] as String?,
       filledDate: json['filled_date'] as String?,
@@ -141,7 +141,7 @@ class FormModel {
     } else if (current == FormStateEnum.filled) {
       return copyWith(formStatus: 'sent');
     } else if (current == FormStateEnum.sent) {
-      return copyWith(formStatus: 'pending');
+      return copyWith(formStatus: 'created');
     }
     return this;
   }

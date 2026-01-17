@@ -23,7 +23,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void _fetchUsersIfAdmin() {
     final auth = context.read<AuthProvider>();
-    if (auth.username?.toLowerCase() == 'admin') {
+    if (auth.user?.role.toLowerCase() == 'admin') {
       context.read<UserProvider>().fetchUsers();
       setState(() {
         _showUserManagement = true;
@@ -34,7 +34,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final auth = context.watch<AuthProvider>();
-    final isAdmin = auth.username?.toLowerCase() == 'admin';
+    final isAdmin = auth.user?.role.toLowerCase() == 'admin';
 
     return Scaffold(
       appBar: AppBar(

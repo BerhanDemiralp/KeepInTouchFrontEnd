@@ -53,12 +53,17 @@ class AuthProvider extends ChangeNotifier {
       _token = await _authService.login(name, password);
       _username = name;
       
-      // Fetch user data
-      final users = await _userService.getAllUsers();
-      _user = users.firstWhere(
-        (u) => u.name.toLowerCase() == name.toLowerCase(),
-        orElse: () => User(id: 1, name: name, role: 'regular'),
-      );
+      // Try to fetch user data, but don't fail if regular user can't access /users/
+      try {
+        final users = await _userService.getAllUsers();
+        _user = users.firstWhere(
+          (u) => u.name.toLowerCase() == name.toLowerCase(),
+          orElse: () => User(id: 0, name: name, role: 'regular'),
+        );
+      } catch (_) {
+        // If regular user can't access /users/, create a default user
+        _user = User(id: 0, name: name, role: 'regular');
+      }
       
       _isLoading = false;
       notifyListeners();

@@ -7,16 +7,28 @@ class AnimalProvider extends ChangeNotifier {
   
   List<Animal> _animals = [];
   String _selectedFilter = 'all';
+  String _searchQuery = '';
   bool _isLoading = false;
   String? _errorMessage;
 
   List<Animal> get animals => _animals;
   String get selectedFilter => _selectedFilter;
+  String get searchQuery => _searchQuery;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
 
   List<Animal> get filteredAnimals {
-    return _animalService.filterAnimals(_animals, _selectedFilter);
+    var result = _animalService.filterAnimals(_animals, _selectedFilter);
+    
+    if (_searchQuery.isNotEmpty) {
+      final query = _searchQuery.toLowerCase();
+      result = result.where((animal) {
+        return animal.name.toLowerCase().contains(query) ||
+               animal.ownerName.toLowerCase().contains(query);
+      }).toList();
+    }
+    
+    return result;
   }
 
   Future<void> fetchAnimals() async {
@@ -42,6 +54,23 @@ class AnimalProvider extends ChangeNotifier {
   void setFilter(String filter) {
     _selectedFilter = filter;
     notifyListeners();
+  }
+
+  void setSearchQuery(String query) {
+    _searchQuery = query;
+    notifyListeners();
+  }
+
+  void clearSearch() {
+    _searchQuery = '';
+    notifyListeners();
+  }
+
+  Future<Animal> createAnimal(Map<String, dynamic> data) async {
+    final newAnimal = await _animalService.createAnimal(data);
+    _animals.insert(0, newAnimal);
+    notifyListeners();
+    return newAnimal;
   }
 
   void clearError() {

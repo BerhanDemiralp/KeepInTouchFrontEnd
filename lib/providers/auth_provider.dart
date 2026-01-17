@@ -2,9 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:keep_in_touch/models/token.dart';
 import 'package:keep_in_touch/models/user.dart';
 import 'package:keep_in_touch/services/auth_service.dart';
+import 'package:keep_in_touch/services/user_service.dart';
 
 class AuthProvider extends ChangeNotifier {
   final AuthService _authService = AuthService();
+  final UserService _userService = UserService();
   
   Token? _token;
   User? _user;
@@ -50,6 +52,14 @@ class AuthProvider extends ChangeNotifier {
     try {
       _token = await _authService.login(name, password);
       _username = name;
+      
+      // Fetch user data
+      final users = await _userService.getAllUsers();
+      _user = users.firstWhere(
+        (u) => u.name.toLowerCase() == name.toLowerCase(),
+        orElse: () => User(id: 1, name: name, role: 'regular'),
+      );
+      
       _isLoading = false;
       notifyListeners();
     } catch (e) {

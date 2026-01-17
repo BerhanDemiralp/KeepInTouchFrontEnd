@@ -67,7 +67,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildInfoRow('Username', auth.username ?? 'Not logged in'),
-                    _buildInfoRow('Email', 'user@example.com'),
                     _buildInfoRow('Role', isAdmin ? 'Admin' : 'User'),
                   ],
                 ),

@@ -63,4 +63,16 @@ class AnimalService {
     await ApiService.handleResponse(response);
     return Animal.fromJson(jsonDecode(response.body));
   }
+
+  Future<Animal> createAnimal(Map<String, dynamic> data) async {
+    final headers = await ApiService.getHeaders();
+    final response = await http.post(
+      Uri.parse('${ApiConfig.baseUrl}/animals/'),
+      headers: headers,
+      body: jsonEncode(data),
+    );
+
+    await ApiService.handleResponse(response);
+    return Animal.fromJson(jsonDecode(response.body));
+  }
 }

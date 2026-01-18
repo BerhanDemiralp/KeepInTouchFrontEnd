@@ -138,7 +138,7 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen> {
               },
               child: const Text(
                 'Complete',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
               ),
             ),
           if (_isEditing)
@@ -149,7 +149,7 @@ class _AnimalDetailScreenState extends State<AnimalDetailScreen> {
               },
               child: const Text(
                 'Cancel',
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.black),
               ),
             ),
         ],

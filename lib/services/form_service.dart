@@ -58,8 +58,9 @@ class FormService {
   Future<FormModel> createForm(int animalId) async {
     final headers = await ApiService.getHeaders();
     final response = await http.post(
-      Uri.parse('${ApiConfig.baseUrl}/animals/$animalId/create-form'),
+      Uri.parse('${ApiConfig.baseUrl}/forms/'),
       headers: headers,
+      body: jsonEncode({'animal_id': animalId}),
     );
 
     await ApiService.handleResponse(response);
